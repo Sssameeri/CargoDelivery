@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".ui.fragment.authorizationUI.AuthFragment">
+
+   <Button
+       android:id="@+id/iAmCustomerBtn"
+       android:text="@string/i_am_customer"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       />
+
+    <Button
+        android:id="@+id/iAmTransporterBtn"
+        android:text="@string/i_am_transporter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>
