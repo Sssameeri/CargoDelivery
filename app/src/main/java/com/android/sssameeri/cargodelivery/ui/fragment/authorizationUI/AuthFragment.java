@@ -2,6 +2,7 @@ package com.android.sssameeri.cargodelivery.ui.fragment.authorizationUI;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -41,6 +42,17 @@ public class AuthFragment extends Fragment {
 
         iAmCustomer.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.customerAuthFragment));
         iAmTransporter.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.transporterAuthFragment));
+
+        OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if(getActivity() != null)
+                    getActivity().finish();
+            }
+        };
+
+        if(getActivity() != null)
+            getActivity().getOnBackPressedDispatcher().addCallback(onBackPressedCallback);
     }
 
     @Override

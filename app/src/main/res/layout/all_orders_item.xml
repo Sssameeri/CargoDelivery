@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    tool:cardCornerRadius="4dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:elevation="4dp"
-    xmlns:tool="http://schemas.android.com/apk/res-auto">
+    app:cardCornerRadius="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:layout_height="wrap_content"
         android:padding="15dp"
-        >
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,7 +20,7 @@
             >
 
             <TextView
-                android:id="@+id/addressFromTxtView"
+                android:id="@+id/addressFromTxtViewAll"
                 tools:text = "Address Mock"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -32,7 +30,7 @@
                 />
 
             <TextView
-                android:id="@+id/addressToTxtView"
+                android:id="@+id/addressToTxtViewAll"
                 tools:text = "Address Mock"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -49,7 +47,7 @@
             >
 
             <TextView
-                android:id="@+id/cityFromTxtView"
+                android:id="@+id/cityFromTxtViewAll"
                 tools:text = "Address Mock"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -59,7 +57,7 @@
                 />
 
             <TextView
-                android:id="@+id/cityTomTxtView"
+                android:id="@+id/cityTomTxtViewAll"
                 tools:text = "Address Mock"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -76,7 +74,7 @@
             >
 
             <TextView
-                android:id="@+id/dateFromTxtView"
+                android:id="@+id/dateFromTxtViewAll"
                 tools:text = "Address Mock"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -86,7 +84,7 @@
                 />
 
             <TextView
-                android:id="@+id/dateToTxtView"
+                android:id="@+id/dateToTxtViewAll"
                 tools:text = "Address Mock"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -96,7 +94,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/orderDescriptionTxtView"
+            android:id="@+id/orderDescriptionTxtViewAll"
             tools:text="Some description with useless information because we don need real info for that mock"
             android:layout_width="match_parent"
             android:textAlignment="center"
@@ -105,6 +103,35 @@
             android:textColor="@android:color/black"
             />
 
+        <TextView
+            android:id="@+id/customerPhoneAll"
+            tools:text="+38(073)-123-6901"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/customerNameAll"
+            tools:text="User Name"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/allOrdersEditTxt"
+            android:hint="@string/price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/acceptOrderBtn"
+            android:text="@string/accept"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

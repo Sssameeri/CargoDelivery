@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">CargoDelivery</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="profile">Профіль</string>
     <string name="create_order">Створити замовлення</string>
     <string name="my_orders">Мої замовлення</string>
@@ -13,9 +11,24 @@
     <string name="name">Ім\'я</string>
     <string name="phone">Телефон</string>
     <string name="password">Пароль</string>
-    <string name="registration_success">Registration success</string>
-    <string name="signin">SignIn</string>
+    <string name="registration_success">Реєстрація успішна</string>
     <string name="name_mock">Ім\'я:</string>
     <string name="phone_mock">Телефон:</string>
     <string name="transport_mock">Транспорт</string>
+    <string name="all_orders">Усі замовлення</string>
+    <string name="accept">Прийняти</string>
+    <string name="approve">Підтвердити</string>
+    <string name="price">Ціна</string>
+    <string name="end">Завершити</string>
+    <string name ="order_added">Замовлення додано</string>
+    <string name ="status_updated">Статус оновлено</string>
+    <string name ="input_price">Введіть ціну!</string>
+    <string name="input_data">Заповність поля!</string>
+    <string name="delivery_date">Дата доставки</string>
+    <string name="sending_date">Дата відправки</string>
+    <string name="short_description">Короткий опис</string>
+    <string name="delivery_city">Місто доставки</string>
+    <string name="sending_city">Місто відправки</string>
+    <string name="sending_address">Адреса відправки</string>
+    <string name="delivery_address">Адреса доставки</string>
 </resources>

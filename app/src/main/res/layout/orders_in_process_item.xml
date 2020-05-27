@@ -1,0 +1,152 @@
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="5dp"
+    app:cardCornerRadius="4dp"
+    android:elevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="15dp"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:id="@+id/addressFromTxtViewInProcess"
+                tools:text = "Address Mock"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="20sp"
+                android:textColor="@android:color/black"
+                />
+
+            <TextView
+                android:id="@+id/addressToTxtViewInProcess"
+                tools:text = "Address Mock"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="20sp"
+                android:textColor="@android:color/black"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:id="@+id/cityFromTxtViewInProcess"
+                tools:text = "Address Mock"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="20sp"
+                android:textColor="@android:color/black"
+                />
+
+            <TextView
+                android:id="@+id/cityToTxtViewInProcess"
+                tools:text = "Address Mock"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="20sp"
+                android:textColor="@android:color/black"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:id="@+id/dateStartTxtViewInProcess"
+                tools:text = "Address Mock"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="20sp"
+                android:textColor="@android:color/black"
+                />
+
+            <TextView
+                android:id="@+id/dateEndTxtViewInProcess"
+                tools:text = "Address Mock"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="20sp"
+                android:textColor="@android:color/black"
+                />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/orderDescriptionTxtViewInProcess"
+            tools:text="Some description with useless information because we don need real info for that mock"
+            android:layout_width="match_parent"
+            android:textAlignment="center"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:id="@+id/transporterNameInProcess"
+                tools:text = "Transporter Name"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="20sp"
+                android:textColor="@android:color/black"
+                />
+
+            <TextView
+                android:id="@+id/transporterPhoneInProcess"
+                tools:text = "Transporter Phone"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="20sp"
+                android:textColor="@android:color/black"
+                />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/priceTxtViewInProcess"
+            tools:text="Price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"
+            />
+
+        <Button
+            android:id="@+id/endButton"
+            android:text="@string/end"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

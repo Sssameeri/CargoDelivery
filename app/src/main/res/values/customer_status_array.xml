@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="status">
+    <string-array name="customer_status_array">
         <item>Активно</item>
+        <item>Підтверджено</item>
         <item>В процесі</item>
         <item>Завершено</item>
     </string-array>

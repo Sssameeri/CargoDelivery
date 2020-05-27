@@ -1,5 +1,6 @@
-package com.android.sssameeri.cargodelivery.ui.fragment;
+package com.android.sssameeri.cargodelivery.ui.fragment.authorizationUI;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.UserHandle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,8 @@ import com.android.sssameeri.cargodelivery.R;
 import com.android.sssameeri.cargodelivery.model.Transport;
 import com.android.sssameeri.cargodelivery.viewmodel.CustomerViewModel;
 import com.android.sssameeri.cargodelivery.viewmodel.TransporterViewModel;
+import com.android.sssameeri.cargodelivery.viewmodel.UserViewModel;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -37,11 +41,25 @@ public class ProfileFragment extends Fragment {
     private LinearLayout linearLayout;
 
     private CustomerViewModel customerViewModel;
+    private UserViewModel userViewModel;
     private TransporterViewModel transporterViewModel;
 
-    private CompositeDisposable compositeDisposable;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+    private OnUserTypeCallback userTypeCallback;
 
     public ProfileFragment() {
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        try {
+            userTypeCallback = (OnUserTypeCallback) context;
+        } catch (ClassCastException e) {
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -59,10 +77,9 @@ public class ProfileFragment extends Fragment {
         transportTextView = view.findViewById(R.id.transportTxtView);
         linearLayout = view.findViewById(R.id.transportLinearLayout);
 
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         customerViewModel = new ViewModelProvider(requireActivity()).get(CustomerViewModel.class);
         transporterViewModel = new ViewModelProvider(requireActivity()).get(TransporterViewModel.class);
-
-        compositeDisposable = new CompositeDisposable();
 
         OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
             @Override
@@ -79,11 +96,21 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(transporterViewModel.getId() != null) {
-            getTransporterData();
-        } else if(customerViewModel.getId() != null) {
-            getCustomerData();
-        }
+        userViewModel.getUserType().observe(getViewLifecycleOwner(), aLong -> {
+            if(aLong == 0) {
+                userTypeCallback.userType(aLong);
+                getTransporterData();
+            } else {
+                userTypeCallback.userType(aLong);
+                getCustomerData();
+            }
+        });
+    }
+
+    @Override
+    public void onDestroy() {
+        compositeDisposable.clear();
+        super.onDestroy();
     }
 
     private void getTransporterData() {
@@ -103,7 +130,6 @@ public class ProfileFragment extends Fragment {
                         Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show();
                     }
             );
-            compositeDisposable.add(getTransporterData);
         });
     }
 
@@ -117,19 +143,17 @@ public class ProfileFragment extends Fragment {
                             result -> {
                                 nameTextView.setText(result.getName());
                                 phoneTextView.setText(result.getPhone());
-                                customerViewModel.closeDatabase();
+                                //customerViewModel.closeDatabase();
                             },
                             throwable -> {
                                 Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                     );
-            compositeDisposable.add(getCustomerData);
+
         });
     }
 
-    @Override
-    public void onDestroy() {
-        compositeDisposable.clear();
-        super.onDestroy();
+    public interface OnUserTypeCallback {
+        public void userType(long type);
     }
 }

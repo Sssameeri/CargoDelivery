@@ -1,5 +1,6 @@
 package com.android.sssameeri.cargodelivery.ui.fragment;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -25,16 +28,20 @@ import com.android.sssameeri.cargodelivery.model.Order;
 import com.android.sssameeri.cargodelivery.model.Status;
 import com.android.sssameeri.cargodelivery.model.Transport;
 import com.android.sssameeri.cargodelivery.viewmodel.CustomerViewModel;
+import com.google.android.material.snackbar.Snackbar;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class AddOrderFragment extends Fragment {
+public class CustomerAddOrderFragment extends Fragment {
 
     private EditText addressFromEditTxt;
     private EditText addressToEditTxt;
@@ -59,8 +66,12 @@ public class AddOrderFragment extends Fragment {
     private Spinner transportSpinner;
     private SpinnerAdapter adapter;
     private CompositeDisposable compositeDisposable;
+    private DatePickerDialog.OnDateSetListener dateFromPicker;
+    private DatePickerDialog.OnDateSetListener dateToPicker;
+    private Calendar calendar = Calendar.getInstance();
 
-    public AddOrderFragment() {}
+
+    public CustomerAddOrderFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,6 +87,29 @@ public class AddOrderFragment extends Fragment {
         customerViewModel = new ViewModelProvider(requireActivity()).get(CustomerViewModel.class);
 
         compositeDisposable = new CompositeDisposable();
+
+
+        dateFromPicker = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, month);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateLabelDateForm();
+            }
+        };
+
+        dateToPicker = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                calendar.set(Calendar.YEAR, year);
+                calendar.set(Calendar.MONTH, month);
+                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateLabelDateTo();
+            }
+        };
+
+
 
         addressFromEditTxt = view.findViewById(R.id.addressFromEditTxt);
         addressToEditTxt = view.findViewById(R.id.addressToEditTxt);
@@ -98,16 +132,18 @@ public class AddOrderFragment extends Fragment {
                             transportList.addAll(result);
                             adapter = new SpinnerAdapter(
                                     getActivity(),
-                                    R.layout.spinner_item,
+                                    R.layout.customer_spinner_item,
                                     transportList);
 
                             transportSpinner.setAdapter(adapter);
                         },
                         throwable -> {
-                            Log.d("TAG", throwable.getMessage());
+                            Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                 );
         compositeDisposable.add(getAllTransportDisposable);
+
+
     }
 
     @Override
@@ -126,6 +162,20 @@ public class AddOrderFragment extends Fragment {
             }
         });
 
+        dateEndEditTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(getContext(), dateToPicker, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
+        dateStartEditTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(getContext(), dateFromPicker, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
         createOrderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,42 +188,76 @@ public class AddOrderFragment extends Fragment {
                 dateStart = dateStartEditTxt.getText().toString();
                 dateEnd = dateEndEditTxt.getText().toString();
                 orderDescription = orderDescriptionEditTxt.getText().toString();
-                orderStatus = Status.ACTIVE.getStatus();
+                orderStatus = Status.ACTIVE;
 
-                Log.d("TAG", transportId + " ");
+                if (TextUtils.isEmpty(addressFrom)
+                        || TextUtils.isEmpty(addressTo)
+                        || TextUtils.isEmpty(cityFrom)
+                        || TextUtils.isEmpty(cityTo)
+                        || TextUtils.isEmpty(dateStart)
+                        || TextUtils.isEmpty(dateEnd)
+                        || TextUtils.isEmpty(orderDescription)
+                ) {
+                    Snackbar.make(getView(), R.string.input_data, Snackbar.LENGTH_SHORT).show();
+                }
+            else if(!checkDate(dateStart, dateEnd)) {
+                Snackbar.make(getView(), "Дата не вірна", Snackbar.LENGTH_SHORT).show();
+            }else {
+                    customerViewModel.getId().observe(getViewLifecycleOwner(), new Observer<Long>() {
+                        @Override
+                        public void onChanged(Long aLong) {
+                            order.setAddressFrom(addressFrom);
+                            order.setAddressTo(addressTo);
+                            order.setCityFrom(cityFrom);
+                            order.setCityTo(cityTo);
+                            order.setDateFrom(dateStart);
+                            order.setDateTo(dateEnd);
+                            order.setOrderDescription(orderDescription);
+                            order.setStatus(orderStatus);
+                            order.setIdTransporter(null);
+                            order.setIdTransport(transportId);
+                            order.setIdCustomer(aLong);
 
-                customerViewModel.getId().observe(getViewLifecycleOwner(), new Observer<Long>() {
-                    @Override
-                    public void onChanged(Long aLong) {
-                        order.setAddressFrom(addressFrom);
-                        order.setAddressTo(addressTo);
-                        order.setCityFrom(cityFrom);
-                        order.setCityTo(cityTo);
-                        order.setDateFrom(dateStart);
-                        order.setDateTo(dateEnd);
-                        order.setOrderDescription(orderDescription);
-                        order.setStatus(orderStatus);
-                        order.setIdTransporter(null);
-                        order.setIdTransport(transportId);
-                        order.setIdCustomer(aLong);
-
-                        Disposable insertOrderDisposable = customerViewModel.insertOrder(order)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(
-                                        result -> {
-                                            clearFields();
-                                            Toast.makeText(getContext(), "Order added", Toast.LENGTH_SHORT).show();
-                                        },
-                                        throwable -> {
-                                            Log.d("TAG", throwable.getMessage());
-                                        }
-                                );
-                        compositeDisposable.add(insertOrderDisposable);
-                    }
-                });
+                            Disposable insertOrderDisposable = customerViewModel.insertOrder(order)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(
+                                            result -> {
+                                                clearFields();
+                                                Snackbar.make(getView(), R.string.order_added, Snackbar.LENGTH_SHORT).show();
+                                            },
+                                            throwable -> {
+                                                Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                    );
+                            compositeDisposable.add(insertOrderDisposable);
+                        }
+                    });
+                }
             }
         });
+    }
+
+    private boolean checkDate(String from, String end) {
+        String[] dateFrom = from.split("-");
+        String[] dateTo = end.split("-");
+
+        return (dateFrom[2].compareTo(dateTo[2]) < 0 && dateFrom[1].compareTo(dateTo[1]) < 0) || dateFrom[2].compareTo(dateTo[2]) > 0;
+    }
+
+
+    private void updateLabelDateTo() {
+        String myFormat = "yyyy-MM-dd";
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
+
+        dateEndEditTxt.setText(sdf.format(calendar.getTime()));
+    }
+
+    private void updateLabelDateForm() {
+        String myFormat = "yyyy-MM-dd";
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
+
+        dateStartEditTxt.setText(sdf.format(calendar.getTime()));
     }
 
     private void clearFields() {

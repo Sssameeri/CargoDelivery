@@ -3,6 +3,7 @@ package com.android.sssameeri.cargodelivery.ui.fragment.authorizationUI;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,13 +27,14 @@ import android.widget.Toast;
 import com.android.sssameeri.cargodelivery.R;
 import com.android.sssameeri.cargodelivery.model.Transport;
 import com.android.sssameeri.cargodelivery.model.Transporter;
-import com.android.sssameeri.cargodelivery.ui.fragment.AddOrderFragment;
 import com.android.sssameeri.cargodelivery.viewmodel.TransporterViewModel;
+import com.android.sssameeri.cargodelivery.viewmodel.UserViewModel;
+import com.github.pinball83.maskededittext.MaskedEditText;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -41,7 +44,7 @@ public class TransporterAuthFragment extends Fragment {
 
     //UI components
     private EditText nameEditTxt;
-    private EditText phoneEditTxt;
+    private MaskedEditText phoneEditTxt;
     private EditText passwordEditText;
     private Button transporterSignUpBtn;
     private Spinner transportSpinner;
@@ -51,6 +54,7 @@ public class TransporterAuthFragment extends Fragment {
 
     private CompositeDisposable compositeDisposable;
     private TransporterViewModel transporterViewModel;
+    private UserViewModel userViewModel;
 
     //Data variables
     private Transporter transporter;
@@ -75,6 +79,7 @@ public class TransporterAuthFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         transporterViewModel = new ViewModelProvider(requireActivity()).get(TransporterViewModel.class);
 
         navController = Navigation.findNavController(view);
@@ -86,6 +91,16 @@ public class TransporterAuthFragment extends Fragment {
         transporterSignUpBtn = view.findViewById(R.id.transporterSignUpBtn);
         switchAuthMode = view.findViewById(R.id.switchAuthModeT);
         compositeDisposable = new CompositeDisposable();
+
+        OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                    navController.navigate(R.id.authFragment);
+            }
+        };
+
+        if(getActivity() != null)
+            getActivity().getOnBackPressedDispatcher().addCallback(onBackPressedCallback);
 
         initSpinner(); //spinner with list of transport
     }
@@ -133,20 +148,25 @@ public class TransporterAuthFragment extends Fragment {
     private void getTransporterData() {
         phone = phoneEditTxt.getText().toString();
         password = passwordEditText.getText().toString();
-
-        Disposable getTransporterDataDisposable = transporterViewModel.getTransporterData(phone, password)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        result -> {
-                            transporterViewModel.setId(result.getId());
-                            navController.navigate(R.id.profileFragment);
-                        },
-                        throwable -> {
-                            Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                );
-        compositeDisposable.add(getTransporterDataDisposable);
+        if(TextUtils.isEmpty(phone) || TextUtils.isEmpty(password)) {
+            Snackbar.make(getView(), R.string.input_data, Snackbar.LENGTH_SHORT).show();
+        } else {
+            Disposable getTransporterDataDisposable = transporterViewModel.getTransporterData(phone, password)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            result -> {
+                                transporterViewModel.setId(result.getId());
+                                transporterViewModel.setTransportId(result.getIdTransport());
+                                userViewModel.setUserType(0);
+                                navController.navigate(R.id.profileFragment);
+                            },
+                            throwable -> {
+                                Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                    );
+            compositeDisposable.add(getTransporterDataDisposable);
+        }
     }
 
     private void insertTransporter() {
@@ -154,24 +174,31 @@ public class TransporterAuthFragment extends Fragment {
         phone = phoneEditTxt.getText().toString();
         password = passwordEditText.getText().toString();
 
-        transporter = new Transporter();
-        transporter.setName(name);
-        transporter.setPhone(phone);
-        transporter.setPassword(password);
-        transporter.setIdTransport(transportId);
+        if(TextUtils.isEmpty(name) || TextUtils.isEmpty(phone) || TextUtils.isEmpty(password)) {
+            Snackbar.make(getView(), R.string.input_data, Snackbar.LENGTH_SHORT).show();
+        } else {
+            transporter = new Transporter();
+            transporter.setName(name);
+            transporter.setPhone(phone);
+            transporter.setPassword(password);
+            transporter.setIdTransport(transportId);
 
-        Disposable disposable = transporterViewModel.insertTransporter(transporter)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        result -> {
-                            transporterViewModel.setId(result);
-                            navController.navigate(R.id.profileFragment);
-                        },
-                        throwable -> {
-                            Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                );
+            Disposable disposable = transporterViewModel.insertTransporter(transporter)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            result -> {
+                                userViewModel.setUserType(0);
+                                transporterViewModel.setId(result);
+                                transporterViewModel.setTransportId(transporter.getIdTransport());
+                                navController.navigate(R.id.profileFragment);
+                            },
+                            throwable -> {
+                                Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                    );
+            compositeDisposable.add(disposable);
+        }
     }
 
     private void initSpinner() {
@@ -185,13 +212,13 @@ public class TransporterAuthFragment extends Fragment {
                                     transportList.addAll(result);
                                     adapter = new SpinnerAdapter(
                                             getActivity(),
-                                            R.layout.spinner_item,
+                                            R.layout.customer_spinner_item,
                                             transportList);
 
                                     transportSpinner.setAdapter(adapter);
                                 },
                                 throwable -> {
-                                    Log.d("TAG", throwable.getMessage());
+                                    Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                         );
         compositeDisposable.add(getAllTransportDisposable);

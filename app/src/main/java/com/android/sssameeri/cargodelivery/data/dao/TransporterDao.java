@@ -4,6 +4,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
+import com.android.sssameeri.cargodelivery.model.Customer;
 import com.android.sssameeri.cargodelivery.model.Transporter;
 import com.android.sssameeri.cargodelivery.model.TransporterWithTransport;
 

@@ -1,22 +1,19 @@
 package com.android.sssameeri.cargodelivery.ui.activity;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import com.android.sssameeri.cargodelivery.R;
 import com.android.sssameeri.cargodelivery.repository.Repository;
+import com.android.sssameeri.cargodelivery.ui.fragment.authorizationUI.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ProfileFragment.OnUserTypeCallback {
 
     private Repository repository;
     private NavController navController;
@@ -55,7 +52,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        repository.closeDatabase();
         super.onDestroy();
+    }
+
+    @Override
+    public void userType(long type) {
+        if(type == 0) {
+            bottomNav.getMenu().clear();
+            bottomNav.inflateMenu(R.menu.transporter_bottom_menu);
+        } else {
+            bottomNav.getMenu().clear();
+            bottomNav.inflateMenu(R.menu.customer_bottom_menu);
+        }
     }
 }

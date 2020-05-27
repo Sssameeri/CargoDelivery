@@ -8,13 +8,14 @@ import com.android.sssameeri.cargodelivery.model.Transport;
 
 import java.util.List;
 
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 @Dao
 public interface TransportDao {
     @Insert
-    Single<Long> insertTransports(Transport transport);
+    Completable insertTransports(List<Transport> transport);
 
     @Query("SELECT * FROM transport")
     Flowable<List<Transport>> getAllTransport();

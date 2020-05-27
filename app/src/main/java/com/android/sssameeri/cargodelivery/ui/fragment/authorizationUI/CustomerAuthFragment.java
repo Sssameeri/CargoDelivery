@@ -2,6 +2,7 @@ package com.android.sssameeri.cargodelivery.ui.fragment.authorizationUI;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -9,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,10 @@ import android.widget.Toast;
 import com.android.sssameeri.cargodelivery.R;
 import com.android.sssameeri.cargodelivery.model.Customer;
 import com.android.sssameeri.cargodelivery.viewmodel.CustomerViewModel;
+import com.android.sssameeri.cargodelivery.viewmodel.UserViewModel;
+import com.github.pinball83.maskededittext.MaskedEditText;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -31,7 +37,7 @@ public class CustomerAuthFragment extends Fragment {
 
     //UI components
     private EditText nameEditTxt;
-    private EditText phoneEditTxt;
+    private MaskedEditText phoneEditTxt;
     private EditText passwordEditTxt;
     private TextView switchAuthMode;
     private Button customerSignUpBtn;
@@ -39,6 +45,7 @@ public class CustomerAuthFragment extends Fragment {
 
     private CompositeDisposable compositeDisposable;
     private CustomerViewModel customerViewModel;
+    private UserViewModel userViewModel;
 
     private boolean authMode = false; //if false then registration else login
 
@@ -65,6 +72,7 @@ public class CustomerAuthFragment extends Fragment {
 
         navController = Navigation.findNavController(view);
 
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         customerViewModel = new ViewModelProvider(requireActivity()).get(CustomerViewModel.class);
 
         //Bind UI components
@@ -73,6 +81,16 @@ public class CustomerAuthFragment extends Fragment {
         passwordEditTxt = view.findViewById(R.id.passwordEditTxt);
         customerSignUpBtn = view.findViewById(R.id.customerSignUpBtn);
         switchAuthMode = view.findViewById(R.id.customerSignInTxtView);
+
+        OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                navController.navigate(R.id.authFragment);
+            }
+        };
+
+        if(getActivity() != null)
+            getActivity().getOnBackPressedDispatcher().addCallback(onBackPressedCallback);
     }
 
     @Override
@@ -117,20 +135,24 @@ public class CustomerAuthFragment extends Fragment {
         phone = phoneEditTxt.getText().toString();
         password = passwordEditTxt.getText().toString();
 
-        Disposable getCustomerDataDisposable = customerViewModel.getCustomerData(phone, password)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        result -> {
-                            customerViewModel.setId(result.getId());
-                            customerViewModel.closeDatabase();
-                            navController.navigate(R.id.profileFragment);
-                        },
-                        throwable -> {
-                            Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                );
-        compositeDisposable.add(getCustomerDataDisposable);
+        if(TextUtils.isEmpty(phone) || TextUtils.isEmpty(password)) {
+            Snackbar.make(getView(), R.string.input_data, Snackbar.LENGTH_SHORT).show();
+        } else {
+            Disposable getCustomerDataDisposable = customerViewModel.getCustomerData(phone, password)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            result -> {
+                                userViewModel.setUserType(1);
+                                customerViewModel.setId(result.getId());
+                                navController.navigate(R.id.profileFragment);
+                            },
+                            throwable -> {
+                                Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                    );
+            compositeDisposable.add(getCustomerDataDisposable);
+        }
     }
 
     //Insert customer into table "customer"
@@ -139,26 +161,29 @@ public class CustomerAuthFragment extends Fragment {
         phone = phoneEditTxt.getText().toString();
         password = passwordEditTxt.getText().toString();
 
-        customer = new Customer();
-        customer.setName(name);
-        customer.setPhone(phone);
-        customer.setPassword(password);
+        if(TextUtils.isEmpty(name) || TextUtils.isEmpty(phone) || TextUtils.isEmpty(password)) {
+            Snackbar.make(getView(), R.string.input_data, Snackbar.LENGTH_SHORT).show();
+        } else {
+            customer = new Customer();
+            customer.setName(name);
+            customer.setPhone(phone);
+            customer.setPassword(password);
 
-        Disposable insertCustomerDisposable = customerViewModel.insertCustomer(customer)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        result -> {
-                            Log.d("TAG", result.toString());
-                            customerViewModel.setId(result);
-                            customerViewModel.closeDatabase();
-                            navController.navigate(R.id.profileFragment);
-                        },
-                        throwable -> {
-                            Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                );
-        compositeDisposable.add(insertCustomerDisposable);
+            Disposable insertCustomerDisposable = customerViewModel.insertCustomer(customer)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            result -> {
+                                userViewModel.setUserType(1);
+                                customerViewModel.setId(result);
+                                navController.navigate(R.id.profileFragment);
+                            },
+                            throwable -> {
+                                Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                    );
+            compositeDisposable.add(insertCustomerDisposable);
+        }
     }
 
     @Override

@@ -10,6 +10,8 @@ import com.android.sssameeri.cargodelivery.data.dao.TransporterDao;
 import com.android.sssameeri.cargodelivery.data.database.Database;
 import com.android.sssameeri.cargodelivery.model.Customer;
 import com.android.sssameeri.cargodelivery.model.Order;
+import com.android.sssameeri.cargodelivery.model.OrderWithCustomerData;
+import com.android.sssameeri.cargodelivery.model.OrderWithUsersInfo;
 import com.android.sssameeri.cargodelivery.model.Transport;
 import com.android.sssameeri.cargodelivery.model.Transporter;
 import com.android.sssameeri.cargodelivery.model.TransporterWithTransport;
@@ -18,6 +20,7 @@ import java.security.Signature;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -37,9 +40,6 @@ public class Repository {
         orderDao = database.getOrderDao();
         transportDao = database.getTransportDao();
         transporterDao = database.getTransporterDao();
-
-//        insertTransports(new Transport("Велосипед"));
-//        insertTransports(new Transport("Автомобиль"));
     }
 
     public Single<Long> insertCustomer(Customer customer) { return customerDao.insertCustomer(customer); }
@@ -62,6 +62,10 @@ public class Repository {
         return transporterDao.getTransporterData(phone, password);
     }
 
+    public Single<Integer> updateOrder(String status, double price, long transporterId, long orderId) {
+        return orderDao.updateOrder(status, price, transporterId, orderId);
+    }
+
     public Single<Long> insertTransporter(Transporter transporter) {
         return transporterDao.insertTransporter(transporter);
 //        Disposable disposable =
@@ -78,22 +82,25 @@ public class Repository {
 //                        );
     }
 
-    public void insertTransports(Transport transports) {
-        Disposable disposable =
-                transportDao.insertTransports(transports)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(result -> Log.d("TAG", "Inserted " + result.toString()),
-                                throwable -> Log.d("TAG", throwable.getMessage())
-                        );
+
+    public Flowable<List<OrderWithUsersInfo>> getCustomerOrdersByStatus(long id, String status) {
+        return orderDao.getCustomerOrdersByStatus(id, status);
     }
 
-    public Flowable<List<Order>> getCustomerOrdersByStatus(long id, String status) {
-        return orderDao.getCustomerOrdersByStatus(id, status);
+    public Single<Integer> updateCustomerOrder(String status, long orderId) {
+        return orderDao.updateCustomerOrder(status, orderId);
     }
 
     public Flowable<List<Transport>> getAllTransport() {
         return transportDao.getAllTransport();
+    }
+
+    public Flowable<List<OrderWithCustomerData>> getOrdersByStatusWithOwnTransport(String status, long id) {
+        return orderDao.getOrdersByStatusWithOwnTransport(status, id);
+    }
+
+    public Flowable<List<OrderWithUsersInfo>> getTransporterOrdersByStatus(long id, String status) {
+        return orderDao.getTransporterOrdersByStatus(id, status);
     }
 
     public void closeDatabase() {

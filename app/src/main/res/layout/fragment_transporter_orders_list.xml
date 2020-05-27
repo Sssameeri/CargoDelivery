@@ -3,24 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragment.CustomerOrdersListFragment"
+    tools:context=".ui.fragment.TransporterOrdersListFragment"
     android:background="@color/background"
     android:orientation="vertical"
     >
 
     <androidx.appcompat.widget.AppCompatSpinner
-        android:id="@+id/statusSpinner"
+        android:id="@+id/transporterStatusSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:entries="@array/customer_status_array"
+        android:entries="@array/transporter_status_array"
         />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/customerOrdersList"
+        android:id="@+id/transporterOrdersList"
         android:layout_width="match_parent"
-        tools:listitem="@layout/active_order_item"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent"/>
+
 </LinearLayout>

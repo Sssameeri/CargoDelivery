@@ -12,6 +12,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.android.sssameeri.cargodelivery.model.Customer;
 import com.android.sssameeri.cargodelivery.model.Order;
+import com.android.sssameeri.cargodelivery.model.OrderWithUsersInfo;
 import com.android.sssameeri.cargodelivery.model.Transport;
 import com.android.sssameeri.cargodelivery.repository.Repository;
 
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -57,8 +59,12 @@ public class CustomerViewModel extends AndroidViewModel {
     public Single<Long> insertOrder(Order order) {return repository.insertOrder(order);}
 
     //Get customer order by status
-    public Flowable<List<Order>> getCustomerOrdersByStatus(long id, String status) {
+    public Flowable<List<OrderWithUsersInfo>> getCustomerOrdersByStatus(long id, String status) {
         return repository.getCustomerOrdersByStatus(id, status);
+    }
+
+    public Single<Integer> updateCustomerOrder(String status, long orderId) {
+        return repository.updateCustomerOrder(status, orderId);
     }
 
     public Flowable<List<Transport>> getAllTransport() {

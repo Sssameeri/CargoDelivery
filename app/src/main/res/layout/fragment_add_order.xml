@@ -3,10 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_margin="10dp"
     android:gravity="center"
-    tools:context=".ui.fragment.AddOrderFragment">
+    tools:context=".ui.fragment.CustomerAddOrderFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +20,7 @@
             android:id="@+id/addressFromEditTxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Адреса відправки"
+            android:hint="@string/sending_address"
             android:layout_weight="1"
             android:inputType="text"
             />
@@ -27,7 +28,7 @@
             android:id="@+id/addressToEditTxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Адреса доставки"
+            android:hint="@string/delivery_address"
             android:layout_weight="1"
             android:inputType="text"
             />
@@ -44,7 +45,7 @@
             android:id="@+id/cityFromEditTxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Місто відправки"
+            android:hint="@string/sending_city"
             android:layout_weight="1"
             android:inputType="text"
             />
@@ -52,7 +53,7 @@
             android:id="@+id/cityToEditTxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Місто доставки"
+            android:hint="@string/delivery_city"
             android:layout_weight="1"
             android:inputType="text"
             />
@@ -69,18 +70,22 @@
             android:id="@+id/dateStartEditTxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Дата відправки"
+            android:hint="@string/sending_date"
             android:layout_weight="1"
             android:inputType="date"
+            android:focusable="false"
+            android:clickable="true"
             />
 
         <EditText
             android:id="@+id/dateEndEditTxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Дата доставки"
+            android:hint="@string/delivery_date"
             android:layout_weight="1"
             android:inputType="date"
+            android:focusable="false"
+            android:clickable="true"
             />
     </LinearLayout>
 
@@ -88,7 +93,7 @@
         android:id="@+id/orderDescriptionEditTxt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Короткий опис"
+        android:hint="@string/short_description"
         android:layout_marginBottom="10dp"
         android:inputType="text"
         />

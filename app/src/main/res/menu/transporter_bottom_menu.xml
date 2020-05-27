@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/profileFragment"
+        android:title="@string/profile"
+        android:icon="@drawable/ic_person"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/allOrdersFragment"
+        android:title="@string/all_orders"
+        android:icon="@drawable/ic_format_list"
+        app:showAsAction="always"
+        />
+
+
+    <item
+        android:id="@+id/transporterOrdersList"
+        android:title="@string/my_orders"
+        android:icon="@drawable/ic_view_list"
+        app:showAsAction="always"
+        />
+
+</menu>

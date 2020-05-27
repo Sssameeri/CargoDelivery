@@ -7,25 +7,17 @@
 
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.android.sssameeri.cargodelivery.ui.fragment.ProfileFragment"
+        android:name="com.android.sssameeri.cargodelivery.ui.fragment.authorizationUI.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" >
-        <action
-            android:id="@+id/action_profileFragment_to_addOrderFragment"
-            app:destination="@id/addOrderFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/addOrderFragment"
-        android:name="com.android.sssameeri.cargodelivery.ui.fragment.AddOrderFragment"
+        android:name="com.android.sssameeri.cargodelivery.ui.fragment.CustomerAddOrderFragment"
         android:label="fragment_add_order"
-        tools:layout="@layout/fragment_add_order" >
-        <action
-            android:id="@+id/action_addOrderFragment_to_ordersListFragment"
-            app:destination="@id/ordersListFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_add_order" />
     <fragment
         android:id="@+id/ordersListFragment"
-        android:name="com.android.sssameeri.cargodelivery.ui.fragment.OrdersListFragment"
+        android:name="com.android.sssameeri.cargodelivery.ui.fragment.CustomerOrdersListFragment"
         android:label="fragment_orders_list"
         tools:layout="@layout/fragment_orders_list" />
     <fragment
@@ -51,26 +43,13 @@
         android:label="fragment_transporter_auth"
         tools:layout="@layout/fragment_transporter_auth" />
     <fragment
-        android:id="@+id/activeOrdersFragment"
-        android:name="com.android.sssameeri.cargodelivery.ActiveOrdersFragment"
-        android:label="fragment_active_orders"
-        tools:layout="@layout/fragment_active_orders" >
-        <action
-            android:id="@+id/action_activeOrdersFragment_to_inProcessOrdersFragment"
-            app:destination="@id/inProcessOrdersFragment" />
-    </fragment>
+        android:id="@+id/allOrdersFragment"
+        android:name="com.android.sssameeri.cargodelivery.ui.fragment.TransporterAllOrdersFragment"
+        android:label="fragment_all_orders"
+        tools:layout="@layout/fragment_all_orders" />
     <fragment
-        android:id="@+id/inProcessOrdersFragment"
-        android:name="com.android.sssameeri.cargodelivery.InProcessOrdersFragment"
-        android:label="fragment_in_process_orders"
-        tools:layout="@layout/fragment_in_process_orders" >
-        <action
-            android:id="@+id/action_inProcessOrdersFragment_to_endedOrdersFragment"
-            app:destination="@id/endedOrdersFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/endedOrdersFragment"
-        android:name="com.android.sssameeri.cargodelivery.EndedOrdersFragment"
-        android:label="fragment_ended_orders"
-        tools:layout="@layout/fragment_ended_orders" />
+        android:id="@+id/transporterOrdersList"
+        android:name="com.android.sssameeri.cargodelivery.ui.fragment.TransporterOrdersListFragment"
+        android:label="fragment_transporter_orders_list"
+        tools:layout="@layout/fragment_transporter_orders_list" />
 </navigation>
