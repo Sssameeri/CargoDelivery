@@ -68,6 +68,8 @@ public class CustomerAuthFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        setRetainInstance(true);
+
         compositeDisposable = new CompositeDisposable();
 
         navController = Navigation.findNavController(view);

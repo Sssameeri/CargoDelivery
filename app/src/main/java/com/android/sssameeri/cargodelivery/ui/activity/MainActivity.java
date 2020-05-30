@@ -25,13 +25,16 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         bottomNav = findViewById(R.id.bottomNavigationView);
         NavigationUI.setupWithNavController(bottomNav, navController);
 
         repository = new Repository(getApplication());
 
-        navController.navigate(R.id.authFragment);
+        if(savedInstanceState == null)
+            navController.navigate(R.id.authFragment);
     }
 
     @Override
